@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Java8 流常规操作 | ScancherHub</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://scancher.github.io/favicon.ico?v=1660182392293">
+<link rel="stylesheet" href="https://scancher.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="Steam流的常用操作
+1.数据准备
+public static List&lt;User&gt; list() {
+        List&lt;User&gt; list = new ArrayList&lt;&gt;();
+    ..." />
+    <meta name="keywords" content="java,Springboot,Mysql" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://scancher.github.io">
+        <img src="https://scancher.github.io/images/avatar.png?v=1660182392293" class="site-logo">
+        <h1 class="site-title">ScancherHub</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      摸鱼至上！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://scancher.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Java8 流常规操作</h2>
+            <div class="post-date">2022-08-04</div>
+            
+              <div class="feature-container" style="background-image: url('https://scancher.github.io/post-images/java8-liu-chang-gui-cao-zuo.jpg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="steam流的常用操作">Steam流的常用操作</h1>
+<h2 id="1数据准备">1.数据准备</h2>
+<pre><code class="language-java">public static List&lt;User&gt; list() {
+        List&lt;User&gt; list = new ArrayList&lt;&gt;();
+        list.add(new User(&quot;孙悟空&quot;, 12));
+        list.add(new User(&quot;猪八戒&quot;, 23));
+        list.add(new User(&quot;沙僧&quot;, 22));
+        list.add(new User(&quot;唐僧&quot;, 45));
+        return list;
+    }
+</code></pre>
+<h2 id="2steam流操作">2.steam流操作</h2>
+<h3 id="1list转map">1.list转map</h3>
+<pre><code class="language-java">//属性映射属性
+Map&lt;String, Integer&gt; map = list().stream().collect(Collectors.toMap(User::getName, User::getAge));
+//属性映射实体
+Map&lt;String, User&gt; map1 = list().stream().collect(Collectors.toMap(User::getName, Function.identity()));
+</code></pre>
+<h3 id="2map转list">2.map转list</h3>
+<pre><code class="language-java">//map中所有的value转换为list
+List&lt;User&gt; list = new ArrayList&lt;&gt;(map1.values());   
+</code></pre>
+<h3 id="3提取list中实体的某个字段生成一个新的list">3.提取list中实体的某个字段，生成一个新的list</h3>
+<pre><code class="language-java"> List&lt;String&gt; list1 = list.stream().map(User::getName).collect(Collectors.toList());     
+</code></pre>
+<h3 id="4根据某一个字段过滤list">4.根据某一个字段过滤list</h3>
+<pre><code class="language-java">List&lt;User&gt; list2 = list().stream().filter(user -&gt; user.getName().contains(&quot;孙&quot;)).collect(Collectors.toList());       
+</code></pre>
+<h3 id="5分页">5.分页</h3>
+<pre><code class="language-java">long offset = 0; 
+long limit = 1; 
+List&lt;User&gt; list3 = list().stream().skip(offset).limit(limit).collect(Collectors.toList());              
+</code></pre>
+<h3 id="6聚合包括最大最小平均总和">6.聚合（包括最大最小平均总和）</h3>
+<pre><code class="language-java">int sum = list().stream().mapToInt(User::getAge).sum(); 
+int max = list().stream().mapToInt(User::getAge).max().getAsInt(); 
+int min = list().stream().mapToInt(User::getAge).min().getAsInt();
+double average = list().stream().mapToDouble(User::getAge).average().getAsDouble();       
+</code></pre>
+<h3 id="7排序">7.排序</h3>
+<pre><code class="language-java">//倒序并把null值排到最后
+list.stream().sorted(Comparator.comparing(User::getNum, Comparator.nullsFirst(Double::compareTo)).reversed()).collect(Collectors.toList());
+</code></pre>
+<h3 id="8分组">8.分组</h3>
+<pre><code class="language-java">Map&lt;String, List&lt;WorkAreaTreeVO&gt;&gt; map = treeVOS.stream().collect(Collectors.groupingBy(WorkAreaTreeVO::getAttrValue));
+</code></pre>
+<h3 id="9根据多个字段去重">9.根据多个字段去重</h3>
+<pre><code class="language-java">list = list.stream().collect(Collectors.collectingAndThen(
+                Collectors.toCollection(() -&gt; new TreeSet&lt;&gt;(
+                        Comparator.comparing(p-&gt;p.getName1() + &quot;;&quot; + p.getName2()))), 								ArrayList::new));
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://scancher.github.io/tag/GIVW8faM2/" class="tag">
+                    java
+                  </a>
+                
+                  <a href="https://scancher.github.io/tag/6baa2yuEX/" class="tag">
+                    Springboot
+                  </a>
+                
+                  <a href="https://scancher.github.io/tag/rrTz9RLCN/" class="tag">
+                    Mysql
+                  </a>
+                
+              </div>
+            
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
